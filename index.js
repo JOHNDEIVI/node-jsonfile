@@ -77,12 +77,25 @@ function writeFileSync (file, obj, options = {}) {
   // not sure if fs.writeFileSync returns anything, but just in case
   return fs.writeFileSync(file, str, options)
 }
+function appendToFileSync (file, newData, options = {}) {
+  let data = {}
+
+  try {
+    data = readFileSync(file, options) || {}
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+  }
+
+  const updated = Object.assign({}, data, newData)
+  return writeFileSync(file, updated, options)
+}
 
 const jsonfile = {
   readFile,
   readFileSync,
   writeFile,
-  writeFileSync
+  writeFileSync,
+  appendToFileSync // 👈 ¡nuevo!
 }
 
 module.exports = jsonfile
